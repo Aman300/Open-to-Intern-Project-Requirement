@@ -17,7 +17,6 @@ const InternSchema = new mongoose.Schema(
       type: Number,
       unique: true,
       required: true,
-      max: 10,
     },
     collegeId: {
       type: ObjectId,

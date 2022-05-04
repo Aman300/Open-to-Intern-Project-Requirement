@@ -10,7 +10,7 @@ router.post('/functionup/colleges', collegeController.createColleges);
 
 router.post('/functionup/interns', internController.createInterns);
 
-//router.get('/functionup/collegeDetails',internController.collegeDetails);
+router.get('/functionup/collegeDetails',collegeController.collegeDetails);
 
 module.exports =  router;
 

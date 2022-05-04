@@ -1,0 +1,15 @@
+eslint:
+  enabled: true
+  config:
+    extensions:
+    - .es6
+    - .js
+
+ratings:
+   paths:
+   - "**.es6"
+   - "**.js"
+
+engines:
+  fixme:
+    enabled: true
