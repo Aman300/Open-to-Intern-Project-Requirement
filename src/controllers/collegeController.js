@@ -1,8 +1,11 @@
 
 const collegeModel = require('../models/collegeModel');
 const internModel = require('../models/internModel')
-const jwt = require("jsonwebtoken");
+//const jwt = require("jsonwebtoken");
+const { default: mongoose } = require('mongoose')
 //const { validString } = require("../utils/validation")
+
+
 
 const createColleges = async (req, res) => {
   try {
@@ -41,25 +44,24 @@ const createColleges = async (req, res) => {
 }
 
 //===================================College DETAILS===================================
-
 const collegeDetails = async (req, res) => {
   try {
-      let collegeName = req.query.collegeName;
-      if (!collegeName) return res.status(400).send({ status: false, message: "Enter College Name" });
-      //if (validString.test(collegeName)) return res.status(400).send({ status: false, message: "Enter a valid college name" })
+    let collegeName = req.query.collegeName
 
-      let getCollegeData = await collegeModel.findOne({ name: collegeName, isDeleted: false }).select({ name: 1, fullName: 1, logoLink: 1 });
-      if (!getCollegeData) return res.status(404).send({ status: false, message: "College not found! check the name and try again" });
+    if (!collegeName) {
+      return res.status(404).send({ status: false, msg: "plese fill  college name" });
+    }
+    let showcollegelist = await collegeModel.findOne({name: collegeName, isDeleted: false}).select({name: 1, fullName: 1, logoLink: 1})
+    if(!showcollegelist){
+      return res.status(400).send({status: false, massage: "College not found please check name"})
+    }
 
-      let { ...data } = getCollegeData._doc
+    let StoreData = showcollegelist
 
-      let getInterns = await internModel.find({ collegeId: data._id, isDeleted: false }).select({ name: 1, email: 1, mobile: 1 });
-      if (!getInterns) return res.status(404).send({ status: false, message: "No interns available" });
+    let getInterns = await internModel.find({ collegeId: StoreData._id, isDeleted: false }).select({ name: 1, email: 1, mobile: 1 });
 
-      delete (data._id);
-      data.interests = getInterns;
-
-      res.status(200).send({ status: true, message: "All okk", data: data });
+    res.status(200).send({data: StoreData, interests : getInterns})
+      
   } catch (err) {
       res.status(500).send({ status: false, message: err.message })
   }
@@ -71,6 +73,7 @@ module.exports = {
 }
 
 // const loginAuthor = async function (req, res) {
+
 //   try {
 //     let email = req.body.email;
 //     let password = req.body.password;
@@ -100,6 +103,25 @@ module.exports = {
 //     res.status(500).send({ msg: "Error", error: err.message })
 //   }
 // };
+
+
+
+// let collegeName = req.query.collegeName;
+//       if (!collegeName) return res.status(400).send({ status: false, message: "Enter College Name" });
+//       //if (validString.test(collegeName)) return res.status(400).send({ status: false, message: "Enter a valid college name" })
+
+//       let getCollegeData = await collegeModel.findOne({ name: collegeName, isDeleted: false }).select({ name: 1, fullName: 1, logoLink: 1 });
+//       if (!getCollegeData) return res.status(404).send({ status: false, message: "College not found! check the name and try again" });
+
+//       let { ...data } = getCollegeData._doc
+
+//       let getInterns = await internModel.find({ collegeId: data._id, isDeleted: false }).select({ name: 1, email: 1, mobile: 1 });
+//       if (!getInterns) return res.status(404).send({ status: false, message: "No interns available" });
+
+//       delete (data._id);
+//       data.interests = getInterns;
+
+//       res.status(200).send({ status: true, message: "All okk", data: data });
 
 
 
