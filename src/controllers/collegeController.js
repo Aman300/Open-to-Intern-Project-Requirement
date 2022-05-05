@@ -12,7 +12,7 @@ const createColleges = async (req, res) => {
 
     let names = /^[a-zA-Z ]{2,30}$/.test(req.body.name)
     let fullName = req.body.fullName
-    let logoLink = req.body.logoLink
+    let logoLink = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*\.(?:png|jpg|jpeg))*$/.test(req.body.logoLink)
     
     let data = await collegeModel.findOne({name: req.body.name})
 
@@ -45,26 +45,30 @@ const createColleges = async (req, res) => {
 
 //===================================College DETAILS===================================
 const collegeDetails = async (req, res) => {
-  try {
-    let collegeName = req.query.collegeName
+  try{
+    const info = req.query.collegeName
+    let getAllCollegeDetails = await internModel.find()
+    if(!info){
+      return res.status(200).send({status: false, massage: getAllCollegeDetails})
+    }   
 
-    if (!collegeName) {
-      return res.status(404).send({ status: false, msg: "plese fill  college name" });
-    }
-    let showcollegelist = await collegeModel.findOne({name: collegeName, isDeleted: false}).select({name: 1, fullName: 1, logoLink: 1})
-    if(!showcollegelist){
-      return res.status(400).send({status: false, massage: "College not found please check name"})
-    }
+    if(Object.keys(info).length === 0) return res.status(400).send({status:false , message:"Please Enter College Name"})
+    const college = await collegeModel.findOne({name: info ,isDeleted:false})
+    if(!college) return res.status(400).send({status:false , message:"Did not found college with this name please register first"})
+      const { name, fullName, logoLink } = college
+      const data = { name, fullName, logoLink };
+      data["interests"] = [];
+      const collegeIdFromcollege = college._id;
 
-    let StoreData = showcollegelist
-
-    let getInterns = await internModel.find({ collegeId: StoreData._id, isDeleted: false }).select({ name: 1, email: 1, mobile: 1 });
-
-    res.status(200).send({data: StoreData, interests : getInterns})
-      
-  } catch (err) {
-      res.status(500).send({ status: false, message: err.message })
-  }
+      const internList = await internModel.find({ collegeId: collegeIdFromcollege  ,isDeleted:false});
+      if (!internList) return res.status(404).send({ status: false, message: " We Did not Have Any Intern With This College" });
+      data["interests"] = [...internList]
+      res.status(200).send({ status: true, data: data });
+}
+catch(error){
+  console.log({message:error.message})
+  res.status(500).send({status:false , message:error.Message})
+}
 }
 
 module.exports = {

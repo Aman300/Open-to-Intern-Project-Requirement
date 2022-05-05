@@ -12,15 +12,6 @@ const createInterns = async (req, res) => {
   try {
 
     let value = req.body
-
-     //validating if the college's ObjectId is valid or not
-     if(!isValidObjectId(value.collegeId))
-     return res.status(404).send({ status: false, msg: "Enter a valid college Id" });
-
-    let college = await collegeModel.findById(value.collegeId);    
-    if (!college) {
-      return res.status(404).send({ status: false, msg: "No such college Id  exist" });
-    }
     
     let emailId = /^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,4}$/.test(req.body.email)
     let mobiles = /^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$/.test(req.body.mobile)
@@ -31,7 +22,17 @@ const createInterns = async (req, res) => {
   
     if(arr.length == 0){
       return res.status(400).send({status: false, massage: "Invalid details please provid deatils" });
-    } else if(!value.name){
+    }
+     //validating if the college's ObjectId is valid or not
+     if(!isValidObjectId(value.collegeId))
+     return res.status(404).send({ status: false, msg: "Enter a valid college Id" });
+
+    let college = await collegeModel.findById(value.collegeId);    
+    if (!college) {
+      return res.status(404).send({ status: false, msg: "No such college Id  exist" });
+    }
+        
+    else if(!value.name){
       return res.status(400).send({status: false, massage: "Name is requred" });
     } else if(mobiles == false){
       return res.status(400).send({status: false, massage: "please enter valid 10 digite mobile number" });
