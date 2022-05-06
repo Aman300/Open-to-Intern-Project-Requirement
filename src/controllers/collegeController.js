@@ -1,9 +1,7 @@
 
 const collegeModel = require('../models/collegeModel');
 const internModel = require('../models/internModel')
-//const jwt = require("jsonwebtoken");
 const { default: mongoose } = require('mongoose')
-//const { validString } = require("../utils/validation")
 
 
 
@@ -39,7 +37,7 @@ const createColleges = async (req, res) => {
       else if (!data) {
       let value = req.body
       let valueCreate = await collegeModel.create(value)
-      res.status(200).send({ status: true, data: valueCreate })
+      res.status(201).send({ status: true, data: valueCreate })
     } 
       else if (data) {
       res.status(400).send({status: false, massage: "Name is alrady exist" })
