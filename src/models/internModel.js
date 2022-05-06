@@ -14,7 +14,7 @@ const InternSchema = new mongoose.Schema(
     },
 
     mobile: {
-      type: Number,
+      type: String,
       unique: true,
       required: true,
     },
