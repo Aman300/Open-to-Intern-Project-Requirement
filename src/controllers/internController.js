@@ -26,8 +26,8 @@ const createInterns = async (req, res) => {
     return res.status(400).send({status:false, massage:"moblie number is required"})
    }
 
-   else if(!data.collegeId){
-    return res.status(400).send({status:false, massage:"college Id is required"})
+   else if(!data.collegeName){
+    return res.status(400).send({status:false, massage:"college Name is required"})
    }
     
     else if (Name == false)  {
@@ -48,18 +48,14 @@ const createInterns = async (req, res) => {
        return res.status(400).send({status: false, message: "mobile number already exist!"})
     }
   
-    else if (mongoose.Types.ObjectId.isValid(data.collegeId) == false){
-       return res.status(400).send({ staus: false, message: "College Id is Invalid" })
-    }
+    let getCllgData = await collegeModel.findOne({ name: data.collegeName}).select({ _id: 1 });
+    if (!getCllgData) return res.status(404).send({ status: false, message: "Enter a valid college name" });
+    data.collegeId = getCllgData._id;
 
-    let Id = await collegeModel.findOne({ _id: data.collegeId ,isDeleted:false});
+    let showInterData = await internModel.create(data);
+    res.status(201).send({ status: true, message: "Account created successfully", massage: showInterData });
 
-    if(!Id){res.status(404).send({ status: false, Error: "College does not exist!" });}
-    else{
-        let internCreated = await internModel.create(data);
-        res.status(201).send({ status: true, data: internCreated});
-    }
-  }   catch (err) {
+  } catch (err) {
   res.status(500).send({  status: false , msg: "Server not responding", error: err.message });
 }
 };

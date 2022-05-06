@@ -51,7 +51,7 @@ const createColleges = async (req, res) => {
 const collegeDetails = async (req, res) => {
   try{
     const info = req.query.collegeName
-    let getAllCollegeDetails = await internModel.find()
+    //let getAllCollegeDetails = await internModel.find()
     if(!info){
       return res.status(200).send({status: false, massage: "college name is requred from query params"})
     }   
