@@ -14,19 +14,20 @@ const createInterns = async (req, res) => {
     let intern = await internModel.findOne({ email : req.body.email});
     let mobileNo = await internModel.findOne({ mobile : req.body.mobile});
 
-    // if (data.name === undefined && data.email === undefined && data.mobile === undefined && data.collegeId === undefined) {
-    //   return res.status(400).send({ status: false, message: "invalid request ! please provide details" })
-    // } 
     if (arr.length == 0){
       return res.status(400).send({ status: false, message: "Invalid request. Please provide Details" })
     } else if(!data.name){
-      return res.status(400).send({ status: false, massage: "Fill the name block" });
+      return res.status(400).send({ status: false, massage: "Name is reqired" });
     }
     else if(!data.email){
     return res.status(400).send({ status: false, massage: "Email is required" });
    }
     else if(!data.mobile){
-    return res.status(400).send({status:false, massage:"Enter 10digit moblie number"})
+    return res.status(400).send({status:false, massage:"moblie number is required"})
+   }
+
+   else if(!data.collegeId){
+    return res.status(400).send({status:false, massage:"college Id is required"})
    }
     
     else if (Name == false)  {
