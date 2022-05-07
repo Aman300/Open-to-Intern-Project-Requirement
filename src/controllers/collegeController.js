@@ -51,14 +51,17 @@ const createColleges = async (req, res) => {
 const collegeDetails = async (req, res) => {
   try{
     const info = req.query.collegeName
-    //let getAllCollegeDetails = await internModel.find()
+
     if(!info){
       return res.status(200).send({status: false, massage: "college name is requred from query params"})
     }   
 
     if(Object.keys(info).length === 0) return res.status(400).send({status:false , message:"Please Enter College Name"})
+
     const college = await collegeModel.findOne({name: info ,isDeleted:false})
+
     if(!college) return res.status(400).send({status:false , message:"Did not found college with this name please register first"})
+
       const { name, fullName, logoLink } = college
       const data = { name, fullName, logoLink };
       data["interests"] = [];
